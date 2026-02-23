@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NoteFlow — стильные заметки</title>
+  <style>
+    :root {
+      --bg: #f4f6ff;
+      --card: #ffffff;
+      --text: #1f2340;
+      --muted: #6f7494;
+      --accent: #5b67f7;
+      --accent-2: #7f88ff;
+      --danger: #ef476f;
+      --shadow: 0 20px 50px rgba(30, 40, 120, 0.15);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 0% 0%, #dde3ff 0, transparent 35%),
+        radial-gradient(circle at 100% 100%, #d4f7ff 0, transparent 33%),
+        var(--bg);
+      min-height: 100vh;
+      padding: 32px 20px;
+    }
+
+    .app {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 22px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #5b67f7, #7f88ff 60%, #63d3ff);
+      color: #fff;
+      border-radius: 26px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1 {
+      font-size: clamp(1.7rem, 2.6vw, 2.5rem);
+      margin-bottom: 10px;
+      letter-spacing: 0.4px;
+    }
+
+    .hero p {
+      max-width: 680px;
+      opacity: 0.95;
+      line-height: 1.45;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .panel-title {
+      margin-bottom: 14px;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .form {
+      display: grid;
+      gap: 12px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid #e3e7ff;
+      border-radius: 12px;
+      padding: 11px 13px;
+      font: inherit;
+      color: inherit;
+      background: #fcfcff;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(91, 103, 247, 0.14);
+      outline: none;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .toolbar,
+    .list-top {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 9px 20px rgba(91, 103, 247, 0.34);
+    }
+
+    .ghost {
+      background: #eef0ff;
+      color: #4f5690;
+    }
+
+    .danger {
+      background: #ffe7ee;
+      color: #c92a52;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .note {
+      border: 1px solid #edf0ff;
+      border-left: 5px solid var(--accent-2);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+      display: grid;
+      gap: 8px;
+    }
+
+    .note h3 {
+      font-size: 1.02rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .note p {
+      color: #444a70;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .meta {
+      font-size: 0.84rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tag {
+      background: #f1f4ff;
+      color: #4a5599;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 30px 10px;
+      border: 1px dashed #d9ddff;
+      border-radius: 14px;
+      background: #fafbff;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <h1>NoteFlow — ваши идеи в идеальном порядке</h1>
+      <p>Красивый и удобный сервис заметок: создавайте, ищите, фильтруйте и сохраняйте важные мысли прямо в браузере.</p>
+    </section>
+
+    <section class="layout">
+      <article class="card">
+        <h2 class="panel-title">Новая заметка</h2>
+        <form id="note-form" class="form">
+          <input id="title" type="text" placeholder="Заголовок" required maxlength="80" />
+          <textarea id="content" placeholder="Текст заметки" required></textarea>
+          <select id="category">
+            <option value="Личное">Личное</option>
+            <option value="Работа">Работа</option>
+            <option value="Учёба">Учёба</option>
+            <option value="Идея">Идея</option>
+          </select>
+          <div class="toolbar">
+            <button class="primary" type="submit">Сохранить заметку</button>
+            <button class="ghost" type="reset" id="clear-form">Очистить форму</button>
+          </div>
+        </form>
+      </article>
+
+      <article class="card">
+        <div class="list-top">
+          <input id="search" type="search" placeholder="Поиск по заголовку и тексту" />
+          <select id="filter-category">
+            <option value="Все">Все категории</option>
+            <option value="Личное">Личное</option>
+            <option value="Работа">Работа</option>
+            <option value="Учёба">Учёба</option>
+            <option value="Идея">Идея</option>
+          </select>
+          <button class="danger" id="clear-all" type="button">Удалить всё</button>
+        </div>
+        <section id="notes" class="list" aria-live="polite"></section>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('note-form');
+    const titleInput = document.getElementById('title');
+    const contentInput = document.getElementById('content');
+    const categoryInput = document.getElementById('category');
+    const searchInput = document.getElementById('search');
+    const filterCategory = document.getElementById('filter-category');
+    const notesContainer = document.getElementById('notes');
+    const clearAllButton = document.getElementById('clear-all');
+
+    const storageKey = 'noteflow-notes-v1';
+    let notes = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+    const saveNotes = () => {
+      localStorage.setItem(storageKey, JSON.stringify(notes));
+    };
+
+    const formatDate = (isoDate) => {
+      return new Date(isoDate).toLocaleString('ru-RU', {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+      });
+    };
+
+    const getFilteredNotes = () => {
+      const query = searchInput.value.trim().toLowerCase();
+      const selectedCategory = filterCategory.value;
+
+      return notes.filter((note) => {
+        const textMatch = `${note.title} ${note.content}`.toLowerCase().includes(query);
+        const categoryMatch = selectedCategory === 'Все' || note.category === selectedCategory;
+        return textMatch && categoryMatch;
+      });
+    };
+
+    const renderNotes = () => {
+      const filtered = getFilteredNotes().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      if (!filtered.length) {
+        notesContainer.innerHTML = '<div class="empty">Пока нет заметок. Добавьте первую ✨</div>';
+        return;
+      }
+
+      notesContainer.innerHTML = filtered.map((note) => `
+        <article class="note">
+          <h3>
+            <span>${note.title}</span>
+            <button class="ghost" data-action="delete" data-id="${note.id}" type="button">Удалить</button>
+          </h3>
+          <p>${note.content}</p>
+          <div class="meta">
+            <span class="tag">${note.category}</span>
+            <time datetime="${note.createdAt}">${formatDate(note.createdAt)}</time>
+          </div>
+        </article>
+      `).join('');
+    };
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const note = {
+        id: crypto.randomUUID(),
+        title: titleInput.value.trim(),
+        content: contentInput.value.trim(),
+        category: categoryInput.value,
+        createdAt: new Date().toISOString()
+      };
+
+      if (!note.title || !note.content) {
+        return;
+      }
+
+      notes.push(note);
+      saveNotes();
+      form.reset();
+      renderNotes();
+      titleInput.focus();
+    });
+
+    notesContainer.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+
+      const action = target.dataset.action;
+      const id = target.dataset.id;
+      if (action !== 'delete' || !id) return;
+
+      notes = notes.filter((note) => note.id !== id);
+      saveNotes();
+      renderNotes();
+    });
+
+    [searchInput, filterCategory].forEach((control) => {
+      control.addEventListener('input', renderNotes);
+      control.addEventListener('change', renderNotes);
+    });
+
+    clearAllButton.addEventListener('click', () => {
+      if (!notes.length) return;
+      const shouldDelete = confirm('Удалить все заметки без возможности восстановления?');
+      if (!shouldDelete) return;
+      notes = [];
+      saveNotes();
+      renderNotes();
+    });
+
+    renderNotes();
+  </script>
+</body>
+</html>
